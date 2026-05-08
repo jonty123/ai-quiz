@@ -6,6 +6,7 @@
 <title>AI Pulse Check — Presenter View</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-cloud/1.2.5/d3.layout.cloud.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&family=Inter:wght@300;400;600;700&display=swap');
 
@@ -197,6 +198,75 @@
 
   /* Q3 & Q4 span full width too */
   #q3panel, #q4panel { grid-column: span 1; }
+
+  /* Floating QR Panel */
+  .qr-float {
+    position: fixed;
+    bottom: 60px;
+    right: 28px;
+    background: var(--card);
+    border: 1px solid rgba(0,229,255,0.3);
+    border-radius: 16px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    z-index: 100;
+    box-shadow: 0 0 30px rgba(0,229,255,0.1), 0 8px 32px rgba(0,0,0,0.4);
+  }
+
+  .qr-float-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    color: var(--cyan);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .qr-box {
+    background: white;
+    border-radius: 8px;
+    padding: 8px;
+    width: 140px;
+    height: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .qr-box canvas, .qr-box img { width: 124px !important; height: 124px !important; }
+
+  .qr-url {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8px;
+    color: var(--muted);
+    text-align: center;
+    max-width: 140px;
+    word-break: break-all;
+  }
+
+  /* Toggle button */
+  .qr-toggle {
+    position: fixed;
+    bottom: 60px;
+    right: 28px;
+    background: var(--card);
+    border: 1px solid rgba(0,229,255,0.3);
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 20px;
+    z-index: 101;
+    box-shadow: 0 0 20px rgba(0,229,255,0.15);
+    transition: all 0.2s;
+  }
+
+  .qr-toggle:hover { background: rgba(0,229,255,0.1); }
 </style>
 </head>
 <body>
@@ -234,8 +304,18 @@
 </main>
 
 <footer>
-  <div class="qr-hint">Scan QR or visit → <strong id="siteUrl">your-site.github.io/ai-quiz</strong> to vote</div>
+  <div class="qr-hint">Scan QR code → <strong>jonty123.github.io/ai-quiz</strong> &nbsp;·&nbsp; Results update live as you vote</div>
 </footer>
+
+<!-- Floating QR Panel -->
+<div class="qr-float" id="qrFloat">
+  <div class="qr-float-label">📱 Scan to Vote</div>
+  <div class="qr-box" id="qrcode"></div>
+  <div class="qr-url">jonty123.github.io/ai-quiz</div>
+  <div class="qr-float-label" style="cursor:pointer;color:var(--muted)" onclick="toggleQR()">✕ hide</div>
+</div>
+
+<div class="qr-toggle" id="qrToggle" onclick="toggleQR()">📱</div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -244,12 +324,12 @@ import { getFirestore, collection, onSnapshot }
 
 // ── PASTE YOUR FIREBASE CONFIG HERE ──────────────────────────────────────
 const firebaseConfig = {
-  apiKey: "AIzaSyBw3n314uKutsZnBW0fQoOdhIlggRMmyoQ",
-  authDomain: "ai-pulse-check.firebaseapp.com",
-  projectId: "ai-pulse-check",
-  storageBucket: "ai-pulse-check.firebasestorage.app",
-  messagingSenderId: "55177296999",
-  appId: "1:55177296999:web:b20bc8f5d10a75c44868c2"
+  apiKey: "REPLACE_WITH_YOUR_API_KEY",
+  authDomain: "REPLACE.firebaseapp.com",
+  projectId: "REPLACE_PROJECT_ID",
+  storageBucket: "REPLACE.appspot.com",
+  messagingSenderId: "REPLACE",
+  appId: "REPLACE"
 };
 // ─────────────────────────────────────────────────────────────────────────
 
@@ -316,6 +396,29 @@ function renderBars(qId, tally, total) {
 
 // Init with zeros
 updateAll();
+
+// Generate QR code
+new QRCode(document.getElementById("qrcode"), {
+  text: "https://jonty123.github.io/ai-quiz",
+  width: 124,
+  height: 124,
+  colorDark: "#000000",
+  colorLight: "#ffffff",
+  correctLevel: QRCode.CorrectLevel.H
+});
+
+// Toggle QR visibility
+window.toggleQR = function() {
+  const panel = document.getElementById('qrFloat');
+  const btn = document.getElementById('qrToggle');
+  if (panel.style.display === 'none') {
+    panel.style.display = 'flex';
+    btn.style.display = 'none';
+  } else {
+    panel.style.display = 'none';
+    btn.style.display = 'flex';
+  }
+};
 </script>
 </body>
 </html>
