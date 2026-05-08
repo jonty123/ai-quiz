@@ -11,16 +11,16 @@
   @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&family=Inter:wght@300;400;600;700&display=swap');
 
   :root {
-    --bg: #06060e;
-    --surface: #0f0f1a;
-    --card: #14141f;
-    --cyan: #00e5ff;
-    --purple: #b44fff;
-    --green: #00ff94;
-    --yellow: #ffe566;
-    --text: #e8e8f0;
-    --muted: #555570;
-    --border: rgba(0,229,255,0.12);
+    --bg: #0d0d20;
+    --surface: #1a1a35;
+    --card: #1e1e38;
+    --cyan: #00f0ff;
+    --purple: #cc66ff;
+    --green: #00ff99;
+    --yellow: #ffdd00;
+    --text: #ffffff;
+    --muted: #aaaacc;
+    --border: rgba(0,240,255,0.3);
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -50,13 +50,13 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 18px 40px;
+    padding: 20px 48px;
     border-bottom: 1px solid var(--border);
   }
 
   .logo {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 13px;
+    font-size: 18px;
     color: var(--cyan);
     letter-spacing: 3px;
   }
@@ -65,18 +65,18 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    background: rgba(0,255,148,0.08);
-    border: 1px solid rgba(0,255,148,0.2);
+    background: rgba(0,255,148,0.12);
+    border: 1px solid rgba(0,255,148,0.4);
     border-radius: 20px;
-    padding: 6px 14px;
+    padding: 8px 18px;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
+    font-size: 14px;
     color: var(--green);
     letter-spacing: 2px;
   }
 
   .live-dot {
-    width: 7px; height: 7px;
+    width: 10px; height: 10px;
     background: var(--green);
     border-radius: 50%;
     animation: pulse 1.5s infinite;
@@ -89,13 +89,13 @@
 
   .voter-count {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 13px;
+    font-size: 18px;
     color: var(--muted);
   }
 
   .voter-count span {
     color: var(--purple);
-    font-size: 18px;
+    font-size: 26px;
     font-weight: 700;
   }
 
@@ -121,54 +121,57 @@
 
   .panel-title {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
+    font-size: 15px;
     color: var(--muted);
     letter-spacing: 2px;
     text-transform: uppercase;
-    margin-bottom: 14px;
+    margin-bottom: 18px;
     flex-shrink: 0;
   }
 
   .panel-title span {
     color: var(--cyan);
-    margin-right: 6px;
+    margin-right: 8px;
+    font-size: 18px;
   }
 
   /* Bar charts */
-  .bars { display: flex; flex-direction: column; gap: 10px; flex: 1; justify-content: center; }
+  .bars { display: flex; flex-direction: column; gap: 14px; flex: 1; justify-content: center; }
 
-  .bar-row { display: flex; align-items: center; gap: 10px; }
+  .bar-row { display: flex; align-items: center; gap: 14px; }
 
   .bar-label {
-    font-size: 12px;
+    font-size: 17px;
     color: var(--text);
-    min-width: 160px;
+    min-width: 220px;
     flex-shrink: 0;
     line-height: 1.3;
+    font-weight: 500;
   }
 
   .bar-track {
     flex: 1;
-    height: 28px;
+    height: 38px;
     background: var(--surface);
-    border-radius: 6px;
+    border-radius: 8px;
     overflow: hidden;
     position: relative;
   }
 
   .bar-fill {
     height: 100%;
-    border-radius: 6px;
+    border-radius: 8px;
     transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
     position: relative;
-    min-width: 2px;
+    min-width: 3px;
   }
 
   .bar-pct {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
+    font-size: 18px;
+    font-weight: 700;
     color: var(--muted);
-    min-width: 36px;
+    min-width: 52px;
     text-align: right;
     flex-shrink: 0;
   }
@@ -189,84 +192,46 @@
 
   .qr-hint {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
+    font-size: 15px;
     color: var(--muted);
     letter-spacing: 1px;
   }
 
-  .qr-hint strong { color: var(--cyan); }
+  .qr-hint strong { color: var(--cyan); font-size: 17px; }
 
   /* Q3 & Q4 span full width too */
   #q3panel, #q4panel { grid-column: span 1; }
 
-  /* Floating QR Panel */
-  .qr-float {
-    position: fixed;
-    bottom: 60px;
-    right: 28px;
-    background: var(--card);
-    border: 1px solid rgba(0,229,255,0.3);
-    border-radius: 16px;
-    padding: 14px;
+  /* QR in header */
+  .qr-header-box {
+    background: white;
+    border-radius: 6px;
+    padding: 5px;
+    width: 64px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .qr-header-box canvas, .qr-header-box img { width: 54px !important; height: 54px !important; }
+  .qr-header-info {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 10px;
-    z-index: 100;
-    box-shadow: 0 0 30px rgba(0,229,255,0.1), 0 8px 32px rgba(0,0,0,0.4);
+    gap: 3px;
   }
-
-  .qr-float-label {
+  .qr-header-label {
     font-family: 'JetBrains Mono', monospace;
     font-size: 9px;
     color: var(--cyan);
     letter-spacing: 2px;
-    text-transform: uppercase;
   }
-
-  .qr-box {
-    background: white;
-    border-radius: 8px;
-    padding: 8px;
-    width: 140px;
-    height: 140px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .qr-box canvas, .qr-box img { width: 124px !important; height: 124px !important; }
-
-  .qr-url {
+  .qr-header-url {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 8px;
-    color: var(--muted);
-    text-align: center;
-    max-width: 140px;
-    word-break: break-all;
+    font-size: 11px;
+    color: var(--text);
+    font-weight: 700;
   }
-
-  /* Toggle button */
-  .qr-toggle {
-    position: fixed;
-    bottom: 60px;
-    right: 28px;
-    background: var(--card);
-    border: 1px solid rgba(0,229,255,0.3);
-    border-radius: 50%;
-    width: 44px;
-    height: 44px;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    font-size: 20px;
-    z-index: 101;
-    box-shadow: 0 0 20px rgba(0,229,255,0.15);
-    transition: all 0.2s;
-  }
-
-  .qr-toggle:hover { background: rgba(0,229,255,0.1); }
 </style>
 </head>
 <body>
@@ -274,6 +239,13 @@
 <header>
   <div class="logo">// AI PULSE CHECK</div>
   <div class="live-badge"><div class="live-dot"></div>LIVE</div>
+  <div style="display:flex;align-items:center;gap:12px;">
+    <div class="qr-header-info">
+      <div class="qr-header-label">SCAN TO VOTE</div>
+      <div class="qr-header-url">jonty123.github.io/ai-quiz</div>
+    </div>
+    <div class="qr-header-box" id="qrcode"></div>
+  </div>
   <div class="voter-count">Responses: <span id="voterCount">0</span></div>
 </header>
 
@@ -304,18 +276,8 @@
 </main>
 
 <footer>
-  <div class="qr-hint">Scan QR code → <strong>jonty123.github.io/ai-quiz</strong> &nbsp;·&nbsp; Results update live as you vote</div>
+  <div class="qr-hint">Results update live as engineers vote &nbsp;·&nbsp; <strong>jonty123.github.io/ai-quiz</strong></div>
 </footer>
-
-<!-- Floating QR Panel -->
-<div class="qr-float" id="qrFloat">
-  <div class="qr-float-label">📱 Scan to Vote</div>
-  <div class="qr-box" id="qrcode"></div>
-  <div class="qr-url">jonty123.github.io/ai-quiz</div>
-  <div class="qr-float-label" style="cursor:pointer;color:var(--muted)" onclick="toggleQR()">✕ hide</div>
-</div>
-
-<div class="qr-toggle" id="qrToggle" onclick="toggleQR()">📱</div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -385,7 +347,7 @@ function renderBars(qId, tally, total) {
       <div class="bar-row">
         <div class="bar-label">${label}</div>
         <div class="bar-track">
-          <div class="bar-fill" style="width:${barW}%; background: #${color}22; border: 1px solid #${color}66;">
+          <div class="bar-fill" style="width:${barW}%; background: #${color}44; border: 2px solid #${color}cc;">
           </div>
         </div>
         <div class="bar-pct" style="color:#${color}">${pct}%</div>
@@ -400,25 +362,12 @@ updateAll();
 // Generate QR code
 new QRCode(document.getElementById("qrcode"), {
   text: "https://jonty123.github.io/ai-quiz",
-  width: 124,
-  height: 124,
+  width: 54,
+  height: 54,
   colorDark: "#000000",
   colorLight: "#ffffff",
   correctLevel: QRCode.CorrectLevel.H
 });
-
-// Toggle QR visibility
-window.toggleQR = function() {
-  const panel = document.getElementById('qrFloat');
-  const btn = document.getElementById('qrToggle');
-  if (panel.style.display === 'none') {
-    panel.style.display = 'flex';
-    btn.style.display = 'none';
-  } else {
-    panel.style.display = 'none';
-    btn.style.display = 'flex';
-  }
-};
 </script>
 </body>
 </html>
