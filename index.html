@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Quiz — Vote Now</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&family=Inter:wght@300;400;600&display=swap');
+
+  :root {
+    --bg: #0a0a0f;
+    --surface: #12121a;
+    --card: #1a1a26;
+    --cyan: #00e5ff;
+    --purple: #b44fff;
+    --green: #00ff94;
+    --text: #e8e8f0;
+    --muted: #6b6b80;
+    --border: rgba(0,229,255,0.15);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px 16px;
+  }
+
+  .header {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+
+  .header .tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--cyan);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .header h1 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: clamp(22px, 6vw, 32px);
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--cyan), var(--purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .header p {
+    color: var(--muted);
+    font-size: 13px;
+    margin-top: 6px;
+  }
+
+  .progress-bar {
+    width: 100%;
+    max-width: 480px;
+    height: 3px;
+    background: var(--card);
+    border-radius: 2px;
+    margin-bottom: 28px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--cyan), var(--purple));
+    border-radius: 2px;
+    transition: width 0.5s ease;
+  }
+
+  .question-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px 24px;
+    width: 100%;
+    max-width: 480px;
+    margin-bottom: 16px;
+  }
+
+  .q-number {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--purple);
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+  }
+
+  .q-text {
+    font-size: clamp(15px, 4vw, 18px);
+    font-weight: 600;
+    line-height: 1.5;
+    margin-bottom: 24px;
+    color: var(--text);
+  }
+
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .option-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text);
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    padding: 14px 18px;
+    text-align: left;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .option-btn:hover:not(:disabled) {
+    border-color: var(--cyan);
+    background: rgba(0,229,255,0.06);
+    transform: translateX(4px);
+  }
+
+  .option-btn.selected {
+    border-color: var(--cyan);
+    background: rgba(0,229,255,0.12);
+    color: var(--cyan);
+  }
+
+  .option-btn.voted {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .option-btn .key {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    background: var(--bg);
+    border-radius: 4px;
+    padding: 2px 6px;
+    min-width: 22px;
+    text-align: center;
+  }
+
+  .option-btn.selected .key {
+    background: var(--cyan);
+    color: var(--bg);
+  }
+
+  .submit-btn {
+    width: 100%;
+    max-width: 480px;
+    padding: 16px;
+    background: linear-gradient(135deg, var(--cyan), var(--purple));
+    border: none;
+    border-radius: 10px;
+    color: var(--bg);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.1s;
+    margin-top: 4px;
+  }
+
+  .submit-btn:hover:not(:disabled) { opacity: 0.9; transform: translateY(-1px); }
+  .submit-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+  .thanks-screen {
+    display: none;
+    text-align: center;
+    padding: 40px 20px;
+    max-width: 480px;
+  }
+
+  .thanks-screen .emoji { font-size: 56px; margin-bottom: 16px; }
+
+  .thanks-screen h2 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 24px;
+    color: var(--green);
+    margin-bottom: 10px;
+  }
+
+  .thanks-screen p { color: var(--muted); line-height: 1.6; }
+
+  .loading {
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    margin-top: 40px;
+  }
+
+  .dot-anim::after {
+    content: '';
+    animation: dots 1.5s infinite;
+  }
+  @keyframes dots {
+    0%  { content: ''; }
+    33% { content: '.'; }
+    66% { content: '..'; }
+    100%{ content: '...'; }
+  }
+
+  .already-voted {
+    background: rgba(0,255,148,0.08);
+    border: 1px solid rgba(0,255,148,0.2);
+    border-radius: 10px;
+    color: var(--green);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    padding: 12px 16px;
+    text-align: center;
+    max-width: 480px;
+    width: 100%;
+    margin-bottom: 16px;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="tag">// AI Pulse Check</div>
+  <h1>Engineers &amp; AI</h1>
+  <p>Anonymous · Takes 60 seconds · Results live on screen</p>
+</div>
+
+<div id="app">
+  <div class="loading dot-anim">Loading questions</div>
+</div>
+
+<!-- Firebase -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, addDoc, serverTimestamp, doc, getDoc, setDoc }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+// ── PASTE YOUR FIREBASE CONFIG HERE ──────────────────────────────────────
+const firebaseConfig = {
+  apiKey: "AIzaSyBw3n314uKutsZnBW0fQoOdhIlggRMmyoQ",
+  authDomain: "ai-pulse-check.firebaseapp.com",
+  projectId: "ai-pulse-check",
+  storageBucket: "ai-pulse-check.firebasestorage.app",
+  messagingSenderId: "55177296999",
+  appId: "1:55177296999:web:b20bc8f5d10a75c44868c2"
+};
+// ─────────────────────────────────────────────────────────────────────────
+
+const QUESTIONS = [
+  {
+    id: "q1",
+    text: "Have you hit AI token rate limits more than 5 times in the past 2 months?",
+    options: ["Yes — all the time 🔥", "No — not yet"]
+  },
+  {
+    id: "q2",
+    text: "Two years ago, did you think AI would be a passing phase?",
+    options: ["Yes — I was skeptical 😅", "No — I saw it coming 🚀"]
+  },
+  {
+    id: "q3",
+    text: "Do you enjoy coding more before AI or with AI?",
+    options: ["Before AI — pure craft 🛠️", "With AI — superpowered ⚡", "Equally both 🤝"]
+  },
+  {
+    id: "q4",
+    text: "Which AI capability excites you most right now?",
+    options: ["Agents & automation 🤖", "Code generation 💻", "Multimodal (vision/voice) 👁️", "RAG & knowledge systems 📚"]
+  }
+];
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// Get or create anonymous voter ID
+let voterId = localStorage.getItem('ai_quiz_voter_id');
+if (!voterId) {
+  voterId = 'voter_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8);
+  localStorage.setItem('ai_quiz_voter_id', voterId);
+}
+
+const answers = {};
+let currentQ = 0;
+let hasVoted = localStorage.getItem('ai_quiz_voted') === 'true';
+
+function renderQuestion(idx) {
+  const q = QUESTIONS[idx];
+  const progress = ((idx) / QUESTIONS.length) * 100;
+
+  const app = document.getElementById('app');
+  app.innerHTML = `
+    <div class="progress-bar"><div class="progress-fill" style="width:${progress}%"></div></div>
+    ${hasVoted ? '<div class="already-voted">✓ You already voted — editing your answers</div>' : ''}
+    <div class="question-card">
+      <div class="q-number">QUESTION ${idx + 1} of ${QUESTIONS.length}</div>
+      <div class="q-text">${q.text}</div>
+      <div class="options" id="opts">
+        ${q.options.map((opt, i) => `
+          <button class="option-btn ${answers[q.id] === opt ? 'selected' : ''}"
+                  onclick="selectOption('${q.id}', \`${opt}\`, this)">
+            <span class="key">${String.fromCharCode(65+i)}</span>
+            ${opt}
+          </button>
+        `).join('')}
+      </div>
+    </div>
+    <button class="submit-btn" id="nextBtn"
+            onclick="nextQuestion()"
+            ${answers[q.id] ? '' : 'disabled'}>
+      ${idx < QUESTIONS.length - 1 ? 'NEXT QUESTION →' : 'SUBMIT ANSWERS ✓'}
+    </button>
+  `;
+}
+
+window.selectOption = function(qId, value, btn) {
+  answers[qId] = value;
+  document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  document.getElementById('nextBtn').disabled = false;
+};
+
+window.nextQuestion = function() {
+  if (currentQ < QUESTIONS.length - 1) {
+    currentQ++;
+    renderQuestion(currentQ);
+  } else {
+    submitVotes();
+  }
+};
+
+async function submitVotes() {
+  document.getElementById('app').innerHTML =
+    '<div class="loading dot-anim">Submitting your votes</div>';
+
+  try {
+    await setDoc(doc(db, 'quiz_votes', voterId), {
+      ...answers,
+      voterId,
+      submittedAt: serverTimestamp()
+    });
+    localStorage.setItem('ai_quiz_voted', 'true');
+    showThanks();
+  } catch (e) {
+    console.error(e);
+    document.getElementById('app').innerHTML =
+      '<div class="loading">Error submitting — check Firebase config.</div>';
+  }
+}
+
+function showThanks() {
+  document.getElementById('app').innerHTML = `
+    <div class="thanks-screen" style="display:block">
+      <div class="emoji">🚀</div>
+      <h2>You're in the cloud!</h2>
+      <p>Your answers are live on the presenter screen.<br>
+      Look up and watch the results update in real time.</p>
+    </div>
+  `;
+}
+
+// Init
+renderQuestion(0);
+</script>
+</body>
+</html>
